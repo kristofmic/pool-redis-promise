@@ -50,6 +50,10 @@ Instance of a redis connection pool
 
 Fetches a client from the redis connection pool and passes the client as the first and only argument to the callback function. As previously mentioned, the client contains callback-based and promise-based methods. The promise-based methods are the same as the standard redis client methods but with `Async` appended and return a promise instead of accepting a callback as the last argument.
 
+**Arguments**
+
+1. callback *(Function)*: Callback function that will receive a client from the redis connection pool
+
 **Returns**
 
 A Bluebird promise
