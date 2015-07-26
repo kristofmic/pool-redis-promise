@@ -22,7 +22,7 @@ class PoolRedisPromise {
     this.redisPool = poolRedis(config);
   }
 
-  getClientAsync (cb) {
+  getClientAsync (cb = function(){}) {
     return Bluebird.using(this._getClientAsync(), cb);
   }
 

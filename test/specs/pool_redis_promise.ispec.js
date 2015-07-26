@@ -11,7 +11,7 @@ describe('pool redis promise (integration)', function () {
 
   it('should be able to store and fetch a value from redis', function(done) {
     prp.getClientAsync(function(client) {
-      client.hmsetAsync('myKey', 'prop1', 'val1', 'prop2', 'val2')
+      return client.hmsetAsync('myKey', 'prop1', 'val1', 'prop2', 'val2')
         .then(function() {
           return client.hgetallAsync('myKey');
         })

@@ -1,79 +1,57 @@
-Node-env-conf
+Pool-redis-promise
 ================
 
-Node-env-conf provides a wrapper to the popular [nconf](https://github.com/indexzero/nconf) npm library.
+Pool-redis-promise provides a wrapper to the [pool-redis](https://github.com/Valzon/node-redis-pool) npm library.
 
 ## Usage
 
-Node-env-conf extends nconf with a simple initialization function to setup nconf and load either default or custom configuration files.
+Pool-redis-promise wraps pool-redis, which wraps [node_redis](https://github.com/NodeRedis/node_redis), providing redis connection pooling with a clean promise-based API (based on [Bluebird](https://github.com/petkaantonov/bluebird));
 
-Calling init will always setup nconf with the `process.argv` and `process.env` variables.
+Pool-redis-promise exposes a simple class that can be invoked with a [configuration](https://www.npmjs.com/package/pool-redis#redis-pool-options) that pool-redis expects, which is then passed to the redis clients. The instance returned exposes a single public API method `#getClientAsync`, which must be invoked with a single callback function argument which receives the redis client from the pool as its single argument.
+
+All calls to `getClientAsync` returns a promise. The client itself is populated with both promise-based and non-promised based methods. The non-promise-based methods are those on the (standard redis client)[https://github.com/NodeRedis/node_redis#sending-commands]. The promise-based methods are those same commands appended with `Async` (e.g., the callback-based `set` has a promise-based method `setAsync`). The promise-based methods accept the same arguments however return a promise and do not accept a callback as the last command (errors will bubble to `catch` functions and successes will bubble to the next `then`);
 
 ### Default configuration
 
-```js
-// main project file (e.g., app.js);
-var envConf = require('node-env-conf');
-
-// load default configuration
-envConf.init();
-
-// loaded
-// * [PROJECT_ROOT]/private-config.json
-// * [PROJECT_ROOT]/env/[NODE_ENV].json
-// * [PROJECT_ROOT]/config.json
-// * [PROJECT_ROOT]/package.json
-
-```
-
-### Custom configuration
+Pool-redis-promise sets up a default configuration when a new instance is created if a configuration is not provided (or only a partial configuration is provided). The default configuration is as follows:
 
 ```js
-// main project file (e.g., app.js);
-var
-  path = require('path'),
-  envConf = require('node-env-conf');
-
-// load custom configuration
-envConf.init([
   {
-    name: 'other_config.json',
-    path: path.resolve(__dirname, '..', '..', 'other', 'configs')
+    host: 'localhost',
+    port: 6379,
+    password: null,
+    maxConnections: 50,
+    handleRedisError: false,
+    options: {
+      database: 0,
+      connect_timeout: 5000
+    }
   }
-]);
-
-// loaded
-// * [PROJECT_ROOT]/other/configs/other_config.json
 
 ```
 
 ## API
 
-Node-env-conf extends the [nconf API](https://github.com/indexzero/nconf#api-documentation), so all properties and methods available on nconf will be available through node-env-conf.
+### #constructor (`new PoolRedisPromise([config])`)
 
-### #init([configs])
-
-Initializes nconf with the `process.argv` and `process.env` variables. Loads in either the default configuration files or the custom files specified by the configs argument.
-
-The order in which the configuration files is specified determines the priority of the configuration values. In other words, whichever file is loaded in first will get highest priority, and whichever is loaded in last will get lowest priority. Any key/value collisions will be resolved to the highest priority file. This can be a convenient means of overriding global configurations with custom environment ones.
-
-The default load order is:
-
-* private-config.json
-* [NODE_ENV].json
-* config.json
-* package.json
+Initializes a new redis connection pool with the provided configuration settings. Any settings not provided will fallback to the defaults listed above.
 
 **Arguments**
 
-1. [configs] *(Array)*: *Optional* Array of config Objects:
-  - name *(String)*: File name
-  - path *(String)*: Resolve path to the directory containing the file
+1. [configs] *(Object)*: *Optional* Configuration settings (see [pool-redis options](https://www.npmjs.com/package/pool-redis#redis-pool-options) for the settings that can be provided)
 
 **Returns**
 
-Node-env-conf object
+Instance of a redis connection pool
+
+### #getClientAsync(callback)
+
+Fetches a client from the redis connection pool and passes the client as the first and only argument to the callback function. As previously mentioned, the client contains callback-based and promise-based methods. The promise-based methods are the same as the standard redis client methods but with `Async` appended and return a promise instead of accepting a callback as the last argument.
+
+**Returns**
+
+A Bluebird promise
 
 ## Testing
 
-Tests can be run via `npm test`
+Tests can be run via `npm test`. Ensure that an instance of Redis is running for the integration tests.

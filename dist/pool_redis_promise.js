@@ -33,7 +33,9 @@ var PoolRedisPromise = (function () {
 
   _createClass(PoolRedisPromise, [{
     key: 'getClientAsync',
-    value: function getClientAsync(cb) {
+    value: function getClientAsync() {
+      var cb = arguments.length <= 0 || arguments[0] === undefined ? function () {} : arguments[0];
+
       return Bluebird.using(this._getClientAsync(), cb);
     }
   }, {
