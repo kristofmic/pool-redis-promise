@@ -1,6 +1,6 @@
 {
   "name": "pool-redis-promise",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "description": "wrapper for pool-redis that provides a promise-based implementation",
   "repository": "https://github.com/kristofmic/pool-redis-promise",

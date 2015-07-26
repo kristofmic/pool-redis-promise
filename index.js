@@ -1,1 +1,1 @@
-module.exports = require('./lib/env_config_manager');
+module.exports = require('./dist/pool_redis_promise');
