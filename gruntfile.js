@@ -36,7 +36,11 @@ function gruntConfig(grunt) {
 
   grunt.registerTask('test', [
     'jshint',
-    'mocha_istanbul'
+    'mocha_istanbul:test'
+  ]);
+
+  grunt.registerTask('integration', [
+    'mocha_istanbul:integration'
   ]);
 
   grunt.registerTask('default', [

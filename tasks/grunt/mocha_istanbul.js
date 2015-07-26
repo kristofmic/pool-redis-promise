@@ -18,5 +18,16 @@ module.exports = {
         lines: 90
       }
     }
+  },
+
+  integration: {
+    src: [
+      'test/config/mocha.conf.js',
+      'test/config/istanbul.conf.js',
+      'test/specs/**/*.ispec.js'
+    ], // the folder, not the files
+    options: {
+      coverage: false
+    }
   }
 };
