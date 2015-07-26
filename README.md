@@ -32,7 +32,9 @@ Pool-redis-promise sets up a default configuration when a new instance is create
 
 ## API
 
-### #constructor (`new PoolRedisPromise([config])`)
+### #constructor
+
+`new require('pool-redis-promise')([config])`
 
 Initializes a new redis connection pool with the provided configuration settings. Any settings not provided will fallback to the defaults listed above.
 
