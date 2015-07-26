@@ -7,7 +7,7 @@ var
   src;
 
 src = [
-  'lib'
+  'dist'
 ];
 
 src.forEach(readRecursive);

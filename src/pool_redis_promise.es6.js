@@ -1,38 +1,22 @@
 /* jshint camelcase:false*/
-const
-  DEFAULT_HOST = 'localhost',
-  DEFAULT_PORT = 6379,
-  DEFAULT_CONNECTIONS = 50,
-  DEFAULT_DB = 0,
-  DEFAULT_TIMEOUT = 5000;
+/* jshint maxlen:110*/
 
 var
   Bluebird = require('bluebird'),
   poolRedis = require('pool-redis'),
-  redis;
-
-redis = poolRedis({
-  host: REDIS_CONFIG.host,
-  port: REDIS_CONFIG.port,
-  password: REDIS_CONFIG.password || null,
-  options: {
-    connect_timeout: REDIS_CONFIG.connectTimeout
-  },
-  maxConnections: REDIS_CONFIG.maxConnections,
-  handleRedisError: false
-});
+  DEFAULT_CONFIGS = require('../config');
 
 class PoolRedisPromise {
   constructor (config = {}) {
-    config.host = config.host || DEFAULT_HOST;
-    config.port = config.port || DEFAULT_PORT;
-    config.password = config.password || DEFAULT_PASSWORD;
-    config.maxConnections = config.maxConnections || DEFAULT_CONNECTIONS;
+    config.host = config.host || DEFAULT_CONFIGS.DEFAULT_HOST;
+    config.port = config.port || DEFAULT_CONFIGS.DEFAULT_PORT;
+    config.password = config.password || DEFAULT_CONFIGS.DEFAULT_PASSWORD;
+    config.maxConnections = config.maxConnections || DEFAULT_CONFIGS.DEFAULT_CONNECTIONS;
     config.handleRedisError = config.handleRedisError || false;
     config.password = config.password || null;
     config.options = config.options || {};
-    config.options.connect_timeout = config.options.connect_timeout || DEFAULT_TIMEOUT;
-    config.options.database = config.options.database || DEFAULT_DB;
+    config.options.connect_timeout = config.options.connect_timeout || DEFAULT_CONFIGS.DEFAULT_TIMEOUT;
+    config.options.database = config.options.database || DEFAULT_CONFIGS.DEFAULT_DB;
 
     this._config = config;
     this.redisPool = poolRedis(config);
@@ -41,7 +25,7 @@ class PoolRedisPromise {
   getClientAsync () {
     return this._getClientFromPool()
       .timeout(this._config.options.connect_timeout, 'Connection to Redis timed out')
-      .disposer(function(client) {
+      .disposer((client) => {
         if (client) {
           return this.redisPool.release(client);
         }
