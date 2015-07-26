@@ -58,7 +58,7 @@ describe('pool redis promise', function () {
       redisClientStub.getClient.callsArgWith(0, clientStub);
       clientStub.selectAsync.callsArg(1);
 
-      Bluebird.using(prp.getClientAsync(), function(client) {
+      prp.getClientAsync(function(client) {
         return new Bluebird(function(res) {
           expect(client._initAsync).to.be.true;
           expect(typeof client.nodeFuncAsync).to.equal('function');
@@ -80,7 +80,7 @@ describe('pool redis promise', function () {
 
       redisClientStub.getClient.callsArgWith(0, clientStub);
 
-      Bluebird.using(prp.getClientAsync(), function(client) {
+      prp.getClientAsync(function(client) {
         return new Bluebird(function() {
           expect(client._initAsync).to.be.true;
           expect(typeof client.nodeFuncAsync).to.equal('undefined');
@@ -98,7 +98,7 @@ describe('pool redis promise', function () {
 
       redisClientStub.getClient.callsArgWith(0, clientStub);
 
-      Bluebird.using(prp.getClientAsync(), function(client) {
+      prp.getClientAsync(function(client) {
         return new Bluebird(function(resolve) {
           resolve('success');
 

@@ -22,7 +22,11 @@ class PoolRedisPromise {
     this.redisPool = poolRedis(config);
   }
 
-  getClientAsync () {
+  getClientAsync (cb) {
+    return Bluebird.using(this._getClientAsync(), cb);
+  }
+
+  _getClientAsync () {
     return this._getClientFromPool()
       .timeout(this._config.options.connect_timeout, 'Connection to Redis timed out')
       .disposer((client) => {

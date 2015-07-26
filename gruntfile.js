@@ -34,13 +34,14 @@ function gruntConfig(grunt) {
     'watch'
   ]);
 
-  grunt.registerTask('test', [
-    'jshint',
-    'mocha_istanbul:test'
-  ]);
-
   grunt.registerTask('integration', [
     'mocha_istanbul:integration'
+  ]);
+
+  grunt.registerTask('test', [
+    'jshint',
+    'mocha_istanbul:test',
+    'integration'
   ]);
 
   grunt.registerTask('default', [

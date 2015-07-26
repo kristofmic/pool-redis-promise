@@ -33,7 +33,12 @@ var PoolRedisPromise = (function () {
 
   _createClass(PoolRedisPromise, [{
     key: 'getClientAsync',
-    value: function getClientAsync() {
+    value: function getClientAsync(cb) {
+      return Bluebird.using(this._getClientAsync(), cb);
+    }
+  }, {
+    key: '_getClientAsync',
+    value: function _getClientAsync() {
       var _this = this;
 
       return this._getClientFromPool().timeout(this._config.options.connect_timeout, 'Connection to Redis timed out').disposer(function (client) {
